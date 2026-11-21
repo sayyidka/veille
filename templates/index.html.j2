@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TàP veille</title>
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TàP veille">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+:root {
+  --bg: #f6f4ef; --card: #ffffff; --ink: #1d1f23; --muted: #6b6f76; --line: #e4e1da;
+  --accent: #c2410c; --accent-ink: #ffffff; --chip: #ece9e2; --tag: #f1eee7;
+  --news: #2563eb; --reddit: #ea580c; --hn: #d97706; --article: #7c3aed; --study: #059669;
+  --forum: #db2777; --social: #0284c7; --podcast: #4d7c0f;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a; --card: #1e2125; --ink: #e8e6e1; --muted: #9a9ea6; --line: #2c3036;
+    --accent: #fb923c; --accent-ink: #1a1a1a; --chip: #2a2e34; --tag: #262a2f;
+    --news: #60a5fa; --reddit: #fb923c; --hn: #fbbf24; --article: #a78bfa; --study: #34d399;
+    --forum: #f472b6; --social: #38bdf8; --podcast: #a3e635;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+
+/* ---------- sticky header ---------- */
+header {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.bar { display: flex; align-items: center; gap: 8px; padding: 8px 16px 0; max-width: 1100px; margin: 0 auto; }
+.brand { font-weight: 700; font-size: 18px; letter-spacing: -.01em; }
+.brand { white-space: nowrap; }
+.updated { color: var(--muted); font-size: 13px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iconbtn {
+  min-width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;
+}
+.iconbtn:active, .iconbtn[aria-pressed="true"] { background: var(--chip); }
+.iconbtn svg { width: 22px; height: 22px; }
+.search { padding: 4px 16px 0; max-width: 1100px; margin: 0 auto; }
+.search input {
+  width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink); padding: 0 14px; font-size: 16px; /* 16px avoids iOS zoom */
+}
+.scroller {
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  padding: 8px 16px; max-width: 1100px; margin: 0 auto; scroll-padding: 16px;
+}
+.scroller::-webkit-scrollbar { display: none; }
+.tab, .chip {
+  flex: 0 0 auto; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid transparent;
+  background: var(--chip); cursor: pointer; white-space: nowrap; font-size: 14px;
+  position: relative;
+}
+.tab::after, .chip::after { content: ""; position: absolute; inset: -4px 0; } /* 44px touch target */
+.tab { font-weight: 600; background: transparent; border-color: var(--line); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.sep { flex: 0 0 1px; background: var(--line); margin: 6px 2px; }
+.count { opacity: .7; font-weight: 400; margin-left: 4px; }
+
+/* ---------- feed ---------- */
+main { padding: 12px 16px 32px; max-width: 1100px; margin: 0 auto; }
+.feed { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 760px) { .feed { grid-template-columns: 1fr 1fr; } }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+}
+.meta { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); min-width: 0; }
+.meta .src { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge {
+  flex: 0 0 auto; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  padding: 2px 7px; border-radius: 6px; color: #fff; background: var(--c, var(--muted));
+}
+@media (prefers-color-scheme: dark) { .badge { color: #111; } }
+.lang { font-size: 11px; font-weight: 600; border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; }
+.title { font-size: 17px; font-weight: 650; line-height: 1.3; text-decoration: none; overflow-wrap: anywhere; }
+.title:active { opacity: .6; }
+.snip {
+  margin: 0; color: var(--muted); font-size: 14.5px; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 2px; }
+.tag { font-size: 12px; background: var(--tag); color: var(--muted); padding: 2px 8px; border-radius: 999px; }
+.stats { margin-left: auto; display: flex; gap: 4px; }
+.stat {
+  font-size: 13px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center;
+  min-height: 36px; padding: 0 8px; border-radius: 10px; white-space: nowrap;
+}
+a.stat { background: var(--tag); }
+a.stat:active { opacity: .6; }
+.empty { text-align: center; color: var(--muted); padding: 48px 0; }
+.more {
+  display: block; width: 100%; height: 48px; margin-top: 16px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); cursor: pointer; font-weight: 600;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="brand">TàP veille</span>
+    <span class="updated" id="updated"></span>
+    <button class="iconbtn" id="sortBtn" aria-label="Change sort order" title="Sort">Top</button>
+    <button class="iconbtn" id="searchBtn" aria-label="Search" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </button>
+  </div>
+  <div class="search" id="searchBox" hidden>
+    <input id="q" type="search" placeholder="Search titles, sources, keywords…" autocomplete="off" enterkeyhint="search">
+  </div>
+  <nav class="scroller" id="tabs" role="tablist" aria-label="Topics"></nav>
+  <div class="scroller" id="chips" aria-label="Filters"></div>
+</header>
+<main>
+  <div class="feed" id="feed"></div>
+  <p class="empty" id="empty" hidden>Nothing matches these filters.</p>
+  <button class="more" id="more" hidden>Show more</button>
+</main>
+
+<script id="data" type="application/json">{{ data_json | safe }}</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById("data").textContent);
+  const TYPES = { news: "News", forum: "Forums", reddit: "Reddit", hn: "HN", social: "Bluesky", article: "Articles", podcast: "Podcasts", study: "Studies" };
+  const TYPE_COLOR = { news: "--news", forum: "--forum", reddit: "--reddit", hn: "--hn", social: "--social", article: "--article", podcast: "--podcast", study: "--study" };
+  const PAGE = 40;
+  const $ = (id) => document.getElementById(id);
+
+  const defaults = { tab: "all", types: [], langs: [], days: 30, sort: "rank", q: "" };
+  let state = { ...defaults };
+  try { Object.assign(state, JSON.parse(localStorage.getItem("veille") || "{}"), { q: "" }); } catch (e) {}
+  const save = () => { try { localStorage.setItem("veille", JSON.stringify({ ...state, q: "" })); } catch (e) {} };
+  let shown = PAGE;
+
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ago = (iso) => {
+    const m = (Date.now() - new Date(iso)) / 60000;
+    if (m < 60) return Math.max(1, Math.round(m)) + "m";
+    if (m < 1440) return Math.round(m / 60) + "h";
+    return Math.round(m / 1440) + "d";
+  };
+  const fmt = (n) => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+  const fold = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  DATA.items.forEach((it) => { it._q = fold([it.t, it.s, it.x, ...(it.k || [])].join(" ")); it._t = +new Date(it.p); });
+
+  // ---------- filtering ----------
+  function baseFilter(it, skipTab) {
+    if (!skipTab && state.tab !== "all" && !it.o.includes(state.tab)) return false;
+    if (state.types.length && !state.types.includes(it.y)) return false;
+    if (state.langs.length && !state.langs.includes(it.l)) return false;
+    if (Date.now() - it._t > state.days * 86400000) return false;
+    if (state.q) { const q = fold(state.q); if (!q.split(/\s+/).every((w) => it._q.includes(w))) return false; }
+    return true;
+  }
+  function filtered() {
+    const list = DATA.items.filter((it) => baseFilter(it, false));
+    if (state.sort === "date") list.sort((a, b) => b._t - a._t);
+    else list.sort((a, b) => b.r - a.r);
+    return list;
+  }
+
+  // ---------- rendering ----------
+  function card(it) {
+    const tags = (it.k || []).slice(0, 3).map((k) => `<span class="tag">${esc(k)}</span>`).join("");
+    let stats = "";
+    if (it.lk) stats += `<a class="stat" href="${esc(it.lk)}" target="_blank" rel="noopener">↗ link</a>`;
+    if (it.c) stats += `<a class="stat" href="${esc(it.c)}" target="_blank" rel="noopener">💬 ${fmt(it.n || 0)}</a>`;
+    if (it.e && it.y !== "study") stats = `<span class="stat">▲ ${fmt(it.e)}</span>` + stats;
+    if (it.e && it.y === "study") stats = `<span class="stat">${fmt(it.e)} cit.</span>` + stats;
+    return `<article class="card">
+      <div class="meta">
+        <span class="badge" style="--c:var(${TYPE_COLOR[it.y] || "--muted"})">${esc(TYPES[it.y] || it.y)}</span>
+        <span class="src">${esc(it.s)}</span><span aria-hidden="true">·</span><span>${ago(it.p)}</span>
+        ${it.l !== "en" ? `<span class="lang">${esc(it.l.toUpperCase())}</span>` : ""}
+      </div>
+      <a class="title" href="${esc(it.u)}" target="_blank" rel="noopener">${esc(it.t)}</a>
+      ${it.x ? `<p class="snip">${esc(it.x)}</p>` : ""}
+      <div class="foot">${tags}<span class="stats">${stats}</span></div>
+    </article>`;
+  }
+
+  function renderTabs() {
+    const tabs = [["all", "All"], ...Object.entries(DATA.topics)];
+    $("tabs").innerHTML = tabs.map(([k, label]) => {
+      const n = DATA.items.filter((it) => (k === "all" || it.o.includes(k)) && baseFilter(it, true)).length;
+      return `<button class="tab" role="tab" data-tab="${k}" aria-selected="${state.tab === k}">${esc(label)}<span class="count">${n}</span></button>`;
+    }).join("");
+  }
+
+  function renderChips() {
+    const chip = (kind, val, label, on) => `<button class="chip" data-kind="${kind}" data-val="${val}" aria-pressed="${on}">${label}</button>`;
+    const langs = [...new Set(DATA.items.map((i) => i.l))].filter((l) => l === "en" || l === "fr");
+    $("chips").innerHTML =
+      Object.entries(TYPES).filter(([k]) => DATA.items.some((i) => i.y === k))
+        .map(([k, l]) => chip("type", k, l, state.types.includes(k))).join("") +
+      `<span class="sep"></span>` +
+      langs.map((l) => chip("lang", l, l.toUpperCase(), state.langs.includes(l))).join("") +
+      `<span class="sep"></span>` +
+      chip("days", 1, "24h", state.days === 1) + chip("days", 7, "7d", state.days === 7) + chip("days", 30, "30d", state.days === 30);
+  }
+
+  function render(resetPage = true) {
+    if (resetPage) shown = PAGE;
+    const list = filtered();
+    $("feed").innerHTML = list.slice(0, shown).map(card).join("");
+    $("empty").hidden = list.length > 0;
+    $("more").hidden = list.length <= shown;
+    $("more").textContent = `Show more (${list.length - shown})`;
+    $("sortBtn").textContent = state.sort === "rank" ? "Top" : "New";
+    renderTabs();
+    renderChips();
+    save();
+  }
+
+  // ---------- events ----------
+  $("tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tab]"); if (!b) return;
+    state.tab = b.dataset.tab; render(); window.scrollTo({ top: 0 });
+  });
+  $("chips").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-kind]"); if (!b) return;
+    const { kind, val } = b.dataset;
+    if (kind === "days") state.days = +val;
+    else {
+      const key = kind === "type" ? "types" : "langs";
+      state[key] = state[key].includes(val) ? state[key].filter((v) => v !== val) : [...state[key], val];
+    }
+    render(); window.scrollTo({ top: 0 });
+  });
+  $("sortBtn").addEventListener("click", () => { state.sort = state.sort === "rank" ? "date" : "rank"; render(); });
+  $("searchBtn").addEventListener("click", () => {
+    const box = $("searchBox"); box.hidden = !box.hidden;
+    $("searchBtn").setAttribute("aria-pressed", String(!box.hidden));
+    if (!box.hidden) $("q").focus(); else if (state.q) { state.q = ""; $("q").value = ""; render(); }
+  });
+  let t; $("q").addEventListener("input", (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim(); render(); }, 150); });
+  $("more").addEventListener("click", () => { shown += PAGE; render(false); });
+
+  $("updated").textContent = "updated " + ago(DATA.generated) + " ago";
+  if (!["all", ...Object.keys(DATA.topics)].includes(state.tab)) state.tab = "all";
+  render();
+  const sel = document.querySelector('.tab[aria-selected="true"]');
+  if (sel) sel.scrollIntoView({ inline: "center", block: "nearest" });
+})();
+</script>
+</body>
+</html>

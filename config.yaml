@@ -1,0 +1,610 @@
+# Veille configuration: edit this file to tune topics and sources.
+# Keywords are matched case-insensitively and accent-insensitively on title + summary,
+# on whole words ("ai" does not match "said"). Weights add up per topic:
+#   3 = very specific to a video subject, 2 = clearly related, 1 = weak signal (needs another match).
+#
+# Themes map to the video subjects:
+#   temps_ecrans      → Pourquoi je perds mon temps… / Sortir de l'addiction aux écrans / Le bonheur est dans l'effort (surproductivité)
+#   apprendre_lire    → Prendre le temps d'apprendre / Le bonheur est dans l'effort / Être polymathe à l'ère de l'IA / Lire des livres est devenu vital
+#   ia_quotidien      → L'IA nous a-t-elle fait gagner du temps libre ? / Compagnon IA (Muse, Dots) / Ce que je ne donne pas à l'IA / Bilan après 4 ans d'IA
+#   hype_fomo         → L'avènement de l'IA est-il inéluctable ? FOMO des entreprises / Fatigué de l'actu IA
+#   internet_opinion  → Où est passé internet ? / L'économie de l'opinion
+
+settings:
+  threshold: 2          # min topic score to keep an item (sources can override with min_score)
+  window_days: 30       # items older than this are dropped from the site
+  max_per_type: 120     # cap per type (news, forum, study…) so busy sources don't crowd out newsletters
+  skeptic_topic: hype_fomo   # sources flagged `skeptic: true` always land in this theme
+  user_agent: "veille-aggregator/0.1 (personal research feed)"
+  timeout: 20
+
+topics:
+  temps_ecrans:
+    label: "Temps & écrans"
+    keywords:
+      # time, busyness, wasted time
+      "time poverty": 3
+      "wasting time": 3
+      "waste time": 2
+      "no time": 2
+      "free time": 2
+      "spare time": 2
+      "leisure": 2
+      "leisure time": 3
+      "busyness": 3
+      "too busy": 3
+      "time management": 2
+      "procrastination": 3
+      "procrastinate": 3
+      "four thousand weeks": 3
+      "slow living": 3
+      "acceleration": 1
+      "burnout": 2
+      "hustle culture": 3
+      "productivity culture": 3
+      "toxic productivity": 3
+      "overwork": 2
+      "doing nothing": 3
+      "boredom": 3
+      "bored": 1
+      "hobbies": 3
+      "hobby": 2
+      "flow state": 3
+      # screens
+      "screen time": 3
+      "screen addiction": 3
+      "phone addiction": 3
+      "smartphone addiction": 3
+      "doomscrolling": 3
+      "scrolling": 2
+      "digital detox": 3
+      "dumbphone": 3
+      "phone-free": 3
+      "phone ban": 3
+      "digital minimalism": 3
+      "attention span": 3
+      "attention economy": 2
+      "distraction": 2
+      "notifications": 1
+      "dopamine": 2
+      "short-form video": 2
+      "tiktok": 1
+      "smartphone": 1
+      "smartphones": 1
+      "social media": 1
+      # FR
+      "perdre son temps": 3
+      "perte de temps": 3
+      "manque de temps": 3
+      "temps libre": 3
+      "loisirs": 2
+      "ennui": 3
+      "s'ennuyer": 3
+      "acceleration sociale": 3
+      "hartmut rosa": 3
+      "surproductivite": 3
+      "productivite": 1
+      "epuisement": 2
+      "temps d'ecran": 3
+      "addiction aux ecrans": 3
+      "ecrans": 2
+      "portable": 1
+      "telephone": 1
+      "deconnexion": 3
+      "detox digitale": 3
+      "capacite d'attention": 3
+      "reseaux sociaux": 1
+
+  apprendre_lire:
+    label: "Apprendre & lire"
+    keywords:
+      # learning & effort
+      "lifelong learning": 3
+      "learning science": 3
+      "learn faster": 3
+      "learning outcomes": 2
+      "learning process": 2
+      "how we learn": 3
+      "desirable difficulties": 3
+      "productive struggle": 3
+      "deliberate practice": 3
+      "effortful": 3
+      "effort": 1
+      "mastery": 2
+      "skill atrophy": 3
+      "deskilling": 3
+      "cognitive offloading": 3
+      "cognitive debt": 3
+      "critical thinking": 2
+      "metacognition": 3
+      "memorization": 2
+      "spaced repetition": 3
+      "polymath": 3
+      "polymaths": 3
+      "generalist": 3
+      "generalists": 3
+      "curiosity": 2
+      "self-taught": 3
+      "autodidact": 3
+      "students": 1
+      "homework": 1
+      # reading & writing
+      "reading": 1
+      "readers": 1
+      "deep reading": 3
+      "read books": 3
+      "reading books": 3
+      "reading for pleasure": 3
+      "reading comprehension": 3
+      "literacy": 2
+      "illiteracy": 3
+      "books": 1
+      "book": 1
+      "novel": 1
+      "novels": 1
+      "library": 1
+      "writing": 1
+      "writers": 1
+      "handwriting": 3
+      "essay": 1
+      # FR
+      "apprendre": 2
+      "apprentissage": 2
+      "autodidacte": 3
+      "polymathe": 3
+      "l'effort": 2
+      "maitrise": 1
+      "pensee critique": 2
+      "lecture": 1
+      "lire": 2
+      "lecteurs": 1
+      "livre": 1
+      "livres": 2
+      "roman": 1
+      "romans": 1
+      "illettrisme": 3
+      "ecriture": 2
+      "ecrire": 2
+      "eleves": 1
+      "etudiants": 1
+
+  ia_quotidien:
+    label: "IA au quotidien"
+    keywords:
+      "ai": 1
+      "artificial intelligence": 1
+      "generative ai": 2
+      "chatgpt": 2
+      "claude": 1
+      "gemini": 1
+      "chatbot": 2
+      "chatbots": 2
+      "llm": 1
+      # companions & dark patterns
+      "ai companion": 3
+      "ai companions": 3
+      "companion app": 3
+      "ai girlfriend": 3
+      "ai boyfriend": 3
+      "ai friend": 3
+      "ai relationship": 3
+      "ai relationships": 3
+      "replika": 3
+      "character.ai": 3
+      "character ai": 3
+      "dark patterns": 3
+      "dark pattern": 3
+      "sycophancy": 3
+      "sycophantic": 3
+      "emotional dependence": 3
+      "emotional attachment": 3
+      "loneliness": 2
+      "lonely": 2
+      "ai therapy": 3
+      "ai therapist": 3
+      # personal use, time saved, boundaries
+      "time saved": 3
+      "save time": 2
+      "saves time": 2
+      "ai productivity": 2
+      "using ai": 2
+      "use ai": 2
+      "i don't use ai": 3
+      "without ai": 3
+      "ai-free": 3
+      "human-made": 1
+      "outsourcing": 2
+      "offload": 2
+      "years of chatgpt": 3
+      # FR
+      "ia": 1
+      "intelligence artificielle": 2
+      "ia generative": 2
+      "compagnon ia": 3
+      "compagnons ia": 3
+      "compagnon virtuel": 3
+      "petite amie virtuelle": 3
+      "dependance affective": 3
+      "solitude": 2
+      "gagner du temps": 3
+      "temps gagne": 3
+      "sans ia": 3
+
+  hype_fomo:
+    label: "Hype & FOMO"
+    keywords:
+      # corporate FOMO & adoption
+      "fomo": 3
+      "ai adoption": 3
+      "ai mandate": 3
+      "ai mandates": 3
+      "ai-first": 3
+      "ai strategy": 2
+      "ai investment": 2
+      "ai spending": 2
+      "ai roi": 3
+      "return on investment": 2
+      "ai pilots": 3
+      "pilot projects": 2
+      "workslop": 3
+      "ai productivity": 2
+      "productivity gains": 2
+      "inevitable": 2
+      "inevitability": 3
+      "agi": 1
+      "agents": 1
+      "ai agents": 1
+      # hype & fatigue
+      "ai hype": 3
+      "hype": 2
+      "overhyped": 3
+      "ai bubble": 3
+      "bubble": 1
+      "ai fatigue": 3
+      "ai backlash": 3
+      "anti-ai": 3
+      "skeptic": 2
+      "skeptics": 2
+      "luddite": 3
+      "luddites": 3
+      "vaporware": 3
+      "techno-solutionism": 3
+      "model collapse": 3
+      # FR
+      "adoption de l'ia": 3
+      "bulle de l'ia": 3
+      "bulle": 1
+      "battage": 3
+      "engouement": 2
+      "ineluctable": 3
+      "critique de l'ia": 3
+      "technosolutionnisme": 3
+      "entreprises": 1
+
+  internet_opinion:
+    label: "Internet & opinion"
+    keywords:
+      # where did the internet go
+      "dead internet": 3
+      "dead internet theory": 3
+      "enshittification": 3
+      "ai slop": 3
+      "slop": 2
+      "small web": 3
+      "indie web": 3
+      "old internet": 3
+      "open web": 2
+      "the web": 1
+      "search engine": 2
+      "google search": 2
+      "ai overviews": 3
+      "zero-click": 3
+      "blogs": 2
+      "blogging": 2
+      "forums": 2
+      "algorithmic feed": 3
+      "algorithm": 1
+      "algorithms": 1
+      "bots": 1
+      "platforms": 1
+      # opinion economy
+      "hot take": 3
+      "hot takes": 3
+      "outrage": 2
+      "rage bait": 3
+      "ragebait": 3
+      "engagement bait": 3
+      "polarization": 2
+      "influencer": 2
+      "influencers": 2
+      "creator economy": 3
+      "attention economy": 2
+      "punditry": 3
+      "commentary": 1
+      "discourse": 2
+      "culture war": 2
+      "opinion": 1
+      "opinions": 1
+      # FR
+      "economie de l'opinion": 3
+      "economie de l'attention": 3
+      "polemique": 2
+      "indignation": 2
+      "influenceurs": 2
+      "editorialistes": 3
+      "chroniqueurs": 2
+      "plateformes": 1
+      "algorithme": 1
+      "algorithmes": 1
+      "merdification": 3
+      "web": 1
+
+# Items matching any of these are dropped (finance / crypto noise)
+exclude:
+  - "earnings call"
+  - "stock price"
+  - "shares fell"
+  - "shares rose"
+  - "ipo"
+  - "crypto"
+  - "bitcoin"
+  - "funding round"
+  - "series a"
+  - "series b"
+  - "deal of the day"
+  - "promo code"
+  - "black friday"
+  - "machine learning model"
+  - "neural network architecture"
+  - "deep learning"
+  - "machine learning"
+  - "reinforcement learning"
+
+# Outlets to always drop (mostly from Google News)
+exclude_sources:
+  - "Seeking Alpha"
+  - "Yahoo Finance"
+  - "Motley Fool"
+  - "The Motley Fool"
+  - "Benzinga"
+  - "Investing.com"
+  - "MarketWatch"
+  - "Barron's"
+  - "TipRanks"
+  - "Zacks"
+
+sources:
+  hn:
+    min_points: 15
+    min_score: 2
+    queries:
+      # temps & écrans
+      - "time management"
+      - "procrastination"
+      - "boredom"
+      - "hobbies"
+      - "burnout"
+      - "screen time"
+      - "dumbphone"
+      - "digital minimalism"
+      - "doomscrolling"
+      # apprendre & lire
+      - "how to learn"
+      - "deliberate practice"
+      - "polymath"
+      - "generalist"
+      - "reading books"
+      - "deep reading"
+      - "literacy"
+      - "handwriting"
+      - "cognitive offloading"
+      - "deskilling"
+      # IA au quotidien
+      - "ai companion"
+      - "replika"
+      - "character.ai"
+      - "dark patterns"
+      - "sycophancy"
+      - "without ai"
+      - "i don't use ai"
+      - "ai productivity study"
+      # hype & FOMO
+      - "ai mandate"
+      - "ai adoption"
+      - "ai roi"
+      - "workslop"
+      - "ai hype"
+      - "ai bubble"
+      - "ai fatigue"
+      # internet & opinion
+      - "dead internet"
+      - "enshittification"
+      - "small web"
+      - "ai slop"
+      - "google search"
+      - "blogging"
+      - "outrage"
+
+  reddit:              # needs REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET (skipped otherwise)
+    time: week
+    limit: 40
+    subreddits:
+      - {name: nosurf}
+      - {name: digitalminimalism}
+      - {name: dumbphones}
+      - {name: productivity}
+      - {name: books}
+      - {name: writing}
+      - {name: learnprogramming}
+      - {name: Teachers}
+      - {name: ArtificialInteligence}
+      - {name: technology}
+      # AI companions: first-hand experiences (on topic by default)
+      - {name: MyBoyfriendIsAI, min_score: 0}
+      - {name: CharacterAIrunaways, min_score: 0}
+      - {name: replika, min_score: 1}
+      # AI skepticism
+      - {name: BetterOffline, min_score: 0, skeptic: true}
+      - {name: antiai, min_score: 0, skeptic: true}
+      - {name: aiwars, min_score: 0, skeptic: true}
+    searches:
+      - {subreddit: france, query: "IA OR ChatGPT OR écrans OR lecture", lang: fr}
+
+  # Lemmy: open Reddit alternative, public API, no key
+  lemmy:
+    sort: TopWeek
+    limit: 30
+    min_votes: 10
+    communities:
+      - {instance: lemmy.world, name: technology}
+      - {instance: lemmy.ml, name: technology}
+      - {instance: lemmy.world, name: books, min_score: 1, min_votes: 5}
+      - {instance: lemmy.ml, name: books, min_score: 1, min_votes: 5}
+      - {instance: lemmy.world, name: fuck_ai, min_score: 0, skeptic: true}
+      - {instance: jlai.lu, name: france, lang: fr, min_votes: 5}
+
+  # Bluesky: only posts sharing an article link, with enough likes
+  bluesky:
+    days: 7
+    min_likes: 30
+    queries:
+      en:
+        - "screen time"
+        - "boredom"
+        - "burnout"
+        - "learning"
+        - "reading books"
+        - "AI companion"
+        - "dark patterns"
+        - "AI productivity"
+        - "AI mandate"
+        - "AI hype"
+        - "AI bubble"
+        - "enshittification"
+        - "dead internet"
+        - "AI slop"
+      fr:
+        - "intelligence artificielle"
+        - "écrans"
+        - "lecture"
+        - "réseaux sociaux"
+
+  google_news:
+    min_score: 1
+    editions:
+      en: {hl: en-US, gl: US, ceid: "US:en"}
+      fr: {hl: fr, gl: FR, ceid: "FR:fr"}
+    queries:
+      en:
+        - '"time poverty" OR "no free time" OR busyness OR "hustle culture" OR "toxic productivity"'
+        - '"screen time" OR "phone addiction" OR doomscrolling OR "digital detox" OR dumbphone'
+        - 'boredom OR hobbies study screens'
+        - '"deep reading" OR "reading for pleasure" OR "attention span" OR "literacy rates"'
+        - 'learning "cognitive offloading" OR deskilling OR "critical thinking" AI students'
+        - 'polymath OR generalist AI era'
+        - '"AI companion" OR Replika OR "Character.AI" OR "AI girlfriend" addiction OR loneliness'
+        - '"dark patterns" chatbot OR "AI sycophancy" OR "emotional dependence" AI'
+        - 'AI "time saved" OR "productivity" workers study'
+        - '"AI adoption" FOMO OR "AI mandate" OR "AI ROI" OR workslop'
+        - '"AI bubble" OR "AI hype" OR "AI fatigue" OR "AI backlash"'
+        - '"dead internet" OR enshittification OR "AI slop" OR "AI Overviews" traffic'
+        - '"outrage economy" OR "rage bait" OR "hot takes" OR "creator economy" opinion'
+      fr:
+        - '"manque de temps" OR "temps libre" OR "perte de temps" OR surproductivité OR ennui'
+        - '"temps d''écran" OR "addiction aux écrans" OR "déconnexion" OR "interdiction du portable"'
+        - '"capacité d''attention" OR illettrisme OR "lecture" jeunes OR "lire des livres"'
+        - 'apprentissage IA élèves OR "esprit critique" OR "effort" école'
+        - '"compagnon IA" OR "compagnons virtuels" OR Replika OR "Character.AI" dépendance'
+        - '"intelligence artificielle" "gagner du temps" OR productivité salariés'
+        - '"adoption de l''IA" entreprises OR "FOMO" IA OR "bulle de l''IA"'
+        - '"critique de l''IA" OR "IA générative" désillusion OR "fatigue" IA'
+        - '"internet mort" OR merdification OR "réseaux sociaux" polarisation OR "économie de l''attention"'
+        - '"économie de l''opinion" OR polémique éditorialistes OR influenceurs opinion'
+
+  rss:
+    # General tech / culture media: keyword-filtered
+    - {name: "The Atlantic", url: "https://www.theatlantic.com/feed/channel/technology/", lang: en}
+    - {name: "MIT Technology Review", url: "https://www.technologyreview.com/feed/", lang: en}
+    - {name: "Wired", url: "https://www.wired.com/feed/rss", lang: en}
+    - {name: "The Verge", url: "https://www.theverge.com/rss/index.xml", lang: en}
+    - {name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", lang: en}
+    - {name: "Rest of World", url: "https://restofworld.org/feed/latest/", lang: en}
+    - {name: "404 Media", url: "https://www.404media.co/rss/", lang: en}
+    - {name: "Platformer", url: "https://www.platformer.news/rss/", lang: en}
+    - {name: "The Conversation", url: "https://theconversation.com/global/articles.atom", lang: en}
+    - {name: "Aeon", url: "https://aeon.co/feed.rss", lang: en}
+    - {name: "Psyche", url: "https://psyche.co/feed", lang: en}
+    - {name: "Nautilus", url: "https://nautil.us/feed/", lang: en}
+    - {name: "Literary Hub", url: "https://lithub.com/feed/", lang: en}
+    - {name: "The Marginalian", url: "https://www.themarginalian.org/feed/", lang: en}
+    # Internet culture / opinion economy
+    - {name: "Kyle Chayka", url: "https://kylechayka.substack.com/feed", lang: en, min_score: 1}
+    - {name: "Pluralistic (Doctorow)", url: "https://pluralistic.net/feed/", lang: en}
+    - {name: "User Mag (Lorenz)", url: "https://www.usermag.co/feed", lang: en}
+    - {name: "Embedded", url: "https://embedded.substack.com/feed", lang: en}
+    - {name: "Galaxy Brain (Warzel)", url: "https://www.theatlantic.com/feed/author/charlie-warzel/", lang: en, min_score: 1}
+    - {name: "Culture Study (Petersen)", url: "https://annehelen.substack.com/feed", lang: en, min_score: 1}
+    # Time / attention / learning / effort
+    - {name: "Cal Newport", url: "https://calnewport.com/feed/", lang: en, min_score: 0}
+    - {name: "After Babel (Haidt)", url: "https://www.afterbabel.com/feed", lang: en, min_score: 1}
+    - {name: "The Convivial Society (Sacasas)", url: "https://theconvivialsociety.substack.com/feed", lang: en, min_score: 0}
+    - {name: "New Cartographies (Carr)", url: "https://www.newcartographies.com/feed", lang: en, min_score: 0}
+    - {name: "The Intrinsic Perspective (Hoel)", url: "https://www.theintrinsicperspective.com/feed", lang: en, min_score: 1}
+    - {name: "The Honest Broker", url: "https://www.honest-broker.com/feed", lang: en, min_score: 1}
+    - {name: "Scott H Young", url: "https://www.scotthyoung.com/blog/feed/", lang: en, min_score: 0}
+    - {name: "Range (David Epstein)", url: "https://davidepstein.substack.com/feed", lang: en, min_score: 0}
+    - {name: "Ness Labs", url: "https://nesslabs.com/feed", lang: en, min_score: 1}
+    - {name: "The Learning Scientists", url: "https://www.learningscientists.org/blog?format=rss", lang: en, min_score: 1}
+    # AI at work, grounded
+    - {name: "One Useful Thing (Mollick)", url: "https://www.oneusefulthing.org/feed", lang: en, min_score: 1}
+    # AI skeptics: always kept, in "Hype & FOMO"
+    - {name: "Marcus on AI", url: "https://garymarcus.substack.com/feed", lang: en, min_score: 0, skeptic: true}
+    - {name: "Where's Your Ed At", url: "https://www.wheresyoured.at/rss/", lang: en, min_score: 0, skeptic: true}
+    - {name: "Blood in the Machine", url: "https://www.bloodinthemachine.com/feed", lang: en, min_score: 0, skeptic: true}
+    - {name: "AI Snake Oil", url: "https://www.aisnakeoil.com/feed", lang: en, min_score: 0, skeptic: true}
+    - {name: "Citation Needed (Molly White)", url: "https://www.citationneeded.news/rss/", lang: en, min_score: 1, skeptic: true}
+    - {name: "Tech Won't Save Us", url: "https://feeds.buzzsprout.com/1004689.rss", lang: en, type: podcast, min_score: 0, skeptic: true}
+    # French
+    - {name: "Le Monde Pixels", url: "https://www.lemonde.fr/pixels/rss_full.xml", lang: fr}
+    - {name: "Le Monde Idées", url: "https://www.lemonde.fr/idees/rss_full.xml", lang: fr}
+    - {name: "The Conversation FR", url: "https://theconversation.com/fr/articles.atom", lang: fr}
+    - {name: "Philosophie Magazine", url: "https://www.philomag.com/rss.xml", lang: fr}
+    - {name: "AOC", url: "https://aoc.media/feed/", lang: fr}
+    - {name: "Cerveau & Psycho", url: "https://www.cerveauetpsycho.fr/rss", lang: fr}
+    - {name: "Le Temps", url: "https://www.letemps.ch/articles.rss", lang: fr}
+    - {name: "Numerama", url: "https://www.numerama.com/feed/", lang: fr}
+    - {name: "Next", url: "https://next.ink/feed/", lang: fr}
+    - {name: "Usbek & Rica", url: "https://usbeketrica.com/fr/rss", lang: fr}
+    - {name: "Socialter", url: "https://www.socialter.fr/rss", lang: fr}
+    - {name: "Framablog", url: "https://framablog.org/feed/", lang: fr, min_score: 1}
+    - {name: "Mais où va le Web", url: "https://maisouvaleweb.fr/feed/", lang: fr, min_score: 0, skeptic: true}
+    - {name: "Dans les algorithmes", url: "https://danslesalgorithmes.net/feed/", lang: fr, min_score: 0, skeptic: true}
+    # Community forums with RSS (keyword-filtered)
+    - {name: "Tildes ~tech", url: "https://tildes.net/~tech/topics.rss", lang: en, type: forum}
+    - {name: "Tildes ~books", url: "https://tildes.net/~books/topics.rss", lang: en, type: forum, min_score: 1}
+    - {name: "Lobsters", url: "https://lobste.rs/t/culture,ai,practices.rss", lang: en, type: forum}
+
+  openalex:
+    days: 30
+    per_query: 12
+    queries:
+      - "time poverty"
+      - "leisure time smartphone"
+      - "boredom"
+      - "problematic smartphone use intervention"
+      - "screen time adolescents"
+      - "desirable difficulties learning"
+      - "generative AI learning outcomes"
+      - "cognitive offloading AI"
+      - "critical thinking generative AI"
+      - "reading for pleasure"
+      - "deep reading digital"
+      - "AI companion loneliness"
+      - "dark patterns"
+      - "generative AI productivity workers"
+      - "AI adoption firms"
+      - "misinformation social media polarization"
+
+  arxiv:
+    categories: [cs.CY, cs.HC]
+    max_results: 150

@@ -1,0 +1,14 @@
+{
+  "name": "TàP veille",
+  "short_name": "TàP veille",
+  "description": "Tech & AI in daily life, attention, reading, writing",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#c2410c",
+  "icons": [
+    {"src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml"}
+  ]
+}
