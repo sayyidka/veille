@@ -538,27 +538,27 @@ sources:
     - {name: "Literary Hub", url: "https://lithub.com/feed/", lang: en}
     - {name: "The Marginalian", url: "https://www.themarginalian.org/feed/", lang: en}
     # Internet culture / opinion economy
-    - {name: "Kyle Chayka", url: "https://kylechayka.substack.com/feed", lang: en, min_score: 1}
+    - {name: "Kyle Chayka", url: "https://kylechayka.substack.com/feed", lang: en, min_score: 1, local: true}
     - {name: "Pluralistic (Doctorow)", url: "https://pluralistic.net/feed/", lang: en}
     - {name: "User Mag (Lorenz)", url: "https://www.usermag.co/feed", lang: en}
-    - {name: "Embedded", url: "https://embedded.substack.com/feed", lang: en}
+    - {name: "Embedded", url: "https://embedded.substack.com/feed", lang: en, local: true}
     - {name: "Galaxy Brain (Warzel)", url: "https://www.theatlantic.com/feed/author/charlie-warzel/", lang: en, min_score: 1}
-    - {name: "Culture Study (Petersen)", url: "https://annehelen.substack.com/feed", lang: en, min_score: 1}
+    - {name: "Culture Study (Petersen)", url: "https://annehelen.substack.com/feed", lang: en, min_score: 1, local: true}
     # Time / attention / learning / effort
     - {name: "Cal Newport", url: "https://calnewport.com/feed/", lang: en, min_score: 0}
     - {name: "After Babel (Haidt)", url: "https://www.afterbabel.com/feed", lang: en, min_score: 1}
-    - {name: "The Convivial Society (Sacasas)", url: "https://theconvivialsociety.substack.com/feed", lang: en, min_score: 0}
+    - {name: "The Convivial Society (Sacasas)", url: "https://theconvivialsociety.substack.com/feed", lang: en, min_score: 0, local: true}
     - {name: "New Cartographies (Carr)", url: "https://www.newcartographies.com/feed", lang: en, min_score: 0}
     - {name: "The Intrinsic Perspective (Hoel)", url: "https://www.theintrinsicperspective.com/feed", lang: en, min_score: 1}
     - {name: "The Honest Broker", url: "https://www.honest-broker.com/feed", lang: en, min_score: 1}
     - {name: "Scott H Young", url: "https://www.scotthyoung.com/blog/feed/", lang: en, min_score: 0}
-    - {name: "Range (David Epstein)", url: "https://davidepstein.substack.com/feed", lang: en, min_score: 0}
+    - {name: "Range (David Epstein)", url: "https://davidepstein.substack.com/feed", lang: en, min_score: 0, local: true}
     - {name: "Ness Labs", url: "https://nesslabs.com/feed", lang: en, min_score: 1}
     - {name: "The Learning Scientists", url: "https://www.learningscientists.org/blog?format=rss", lang: en, min_score: 1}
     # AI at work, grounded
     - {name: "One Useful Thing (Mollick)", url: "https://www.oneusefulthing.org/feed", lang: en, min_score: 1}
     # AI skeptics: always kept, in "Hype & FOMO"
-    - {name: "Marcus on AI", url: "https://garymarcus.substack.com/feed", lang: en, min_score: 0, skeptic: true}
+    - {name: "Marcus on AI", url: "https://garymarcus.substack.com/feed", lang: en, min_score: 0, skeptic: true, local: true}
     - {name: "Where's Your Ed At", url: "https://www.wheresyoured.at/rss/", lang: en, min_score: 0, skeptic: true}
     - {name: "Blood in the Machine", url: "https://www.bloodinthemachine.com/feed", lang: en, min_score: 0, skeptic: true}
     - {name: "AI Snake Oil", url: "https://www.aisnakeoil.com/feed", lang: en, min_score: 0, skeptic: true}
@@ -583,6 +583,10 @@ sources:
     - {name: "Tildes ~tech", url: "https://tildes.net/~tech/topics.rss", lang: en, type: forum}
     - {name: "Tildes ~books", url: "https://tildes.net/~books/topics.rss", lang: en, type: forum, min_score: 1}
     - {name: "Lobsters", url: "https://lobste.rs/t/culture,ai,practices.rss", lang: en, type: forum}
+
+  # Feeds marked `local: true` above are blocked on GitHub's servers (Substack's Cloudflare check).
+  # Your Mac fetches them with `veille relay` and pushes relay/local_items.json; CI reads that file.
+  relay: {}
 
   openalex:
     days: 30

@@ -2,6 +2,7 @@ import argparse
 import http.server
 import logging
 import socket
+import subprocess
 import time
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -11,7 +12,7 @@ import yaml
 
 from . import db
 from .build import ROOT, build
-from .fetchers import arxiv, bluesky, google_news, hn, lemmy, make_client, openalex, reddit, rss
+from .fetchers import arxiv, bluesky, google_news, hn, lemmy, make_client, openalex, reddit, relay, rss
 
 log = logging.getLogger("veille")
 
@@ -24,6 +25,7 @@ FETCHERS = {
     "rss": rss.fetch,
     "openalex": openalex.fetch,
     "arxiv": arxiv.fetch,
+    "relay": relay.fetch,
 }
 
 
@@ -51,6 +53,32 @@ def cmd_fetch(conn, config: dict, only: list[str] | None) -> None:
             new = db.upsert(conn, items)
             log.info("%-12s %4d fetched, %4d new  (%.1fs)", name, len(items), new, time.time() - t0)
     db.prune(conn, config["settings"]["window_days"])
+
+
+def cmd_relay(config: dict, push: bool) -> None:
+    """Fetch feeds marked `local: true` from this computer and publish them for CI."""
+    with make_client(config) as client:
+        items = rss.fetch(config, client, local_only=True)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=config["settings"]["window_days"])
+    items = [i for i in items if i.published >= cutoff]
+    relay.save(items)
+    log.info("Relay: %d items from %d local feeds written to %s", len(items),
+             sum(1 for f in config["sources"].get("rss", []) if f.get("local")), relay.RELAY_FILE.relative_to(ROOT))
+    if not push:
+        return
+    rel = str(relay.RELAY_FILE.relative_to(ROOT))
+    git = ["git", "-C", str(ROOT)]
+    if subprocess.run([*git, "status", "--porcelain", "--", rel], capture_output=True, text=True).stdout.strip() == "":
+        log.info("Relay: no change, nothing to push")
+        return
+    subprocess.run([*git, "add", "--", rel], check=True)
+    # Commit only the relay file, even if other files have uncommitted edits
+    subprocess.run([*git, "commit", "-q", "-m", "relay: update local feeds", "--", rel], check=True)
+    r = subprocess.run([*git, "push", "-q", "origin", "HEAD:main"], capture_output=True, text=True)
+    if r.returncode:
+        log.error("Relay: push failed (will retry next run): %s", r.stderr.strip())
+    else:
+        log.info("Relay: pushed, the site will update in ~2 minutes")
 
 
 def _lan_ip() -> str | None:
@@ -87,13 +115,15 @@ def cmd_serve(port: int, lan: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="veille", description="Topic aggregator")
-    parser.add_argument("command", choices=["fetch", "build", "run", "serve"],
-                        help="run = fetch + build; serve = preview site/ in a browser")
+    parser.add_argument("command", choices=["fetch", "build", "run", "serve", "relay"],
+                        help="run = fetch + build; serve = preview site/ in a browser; "
+                             "relay = fetch `local: true` feeds here and push them for CI")
     parser.add_argument("--config", type=Path, default=ROOT / "config.yaml")
     parser.add_argument("--db", type=Path, default=ROOT / "data" / "veille.db")
     parser.add_argument("--only", nargs="*", choices=list(FETCHERS), help="fetch only these sources")
     parser.add_argument("--port", type=int, default=8000, help="serve: port (default 8000)")
     parser.add_argument("--lan", action="store_true", help="serve: also reachable from other devices on your Wi-Fi")
+    parser.add_argument("--no-push", action="store_true", help="relay: write the file but don't commit/push")
     args = parser.parse_args()
 
     if args.command == "serve":
@@ -103,6 +133,8 @@ def main() -> None:
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
     config = load_config(args.config)
+    if args.command == "relay":
+        return cmd_relay(config, push=not args.no_push)
     conn = db.connect(args.db)
     if args.command in ("fetch", "run"):
         cmd_fetch(conn, config, args.only)

@@ -36,5 +36,14 @@ After editing keywords, run `veille build` to see the effect immediately.
 4. **Actions → Update feed → Run workflow**. It then runs every 2 hours on its own.
 5. Open `https://<your-user>.github.io/veille/` on your phone → Share → **Add to Home Screen**.
 
+### Substack newsletters (relay from your Mac)
+Substack shows a Cloudflare bot check to cloud servers, so `*.substack.com` feeds fail on GitHub.
+Those feeds are marked `local: true` in `config.yaml`: GitHub skips them, and your Mac fetches them instead.
+- `sh scripts/install-relay.sh` installs a background job that runs `veille relay` every 4 hours (while the Mac is awake):
+  it fetches those feeds, commits `relay/local_items.json` and pushes it, which also triggers a site rebuild.
+- Log: `~/Library/Logs/tap-veille-relay.log` · Run by hand: `.venv/bin/veille relay` · Remove: `sh scripts/install-relay.sh uninstall`
+- Bonus: these regular commits keep the repo active, so GitHub never pauses the scheduled refresh (it does after 60 days without commits).
+- To add another blocked feed, add `local: true` to it in `config.yaml`.
+
 Note: GitHub Pages sites are public. The page only contains public links, but if you want it private, Cloudflare Pages + Access
 (free) is the easiest alternative.

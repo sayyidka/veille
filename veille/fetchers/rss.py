@@ -1,4 +1,5 @@
 import logging
+import os
 
 import feedparser
 import httpx
@@ -17,9 +18,27 @@ def entry_date(e):
     return e.get("published_parsed") or e.get("updated_parsed") or e.get("published") or e.get("updated")
 
 
-def fetch(config: dict, client: httpx.Client) -> list[Item]:
+def in_ci() -> bool:
+    return os.environ.get("GITHUB_ACTIONS") == "true"
+
+
+def fetch(config: dict, client: httpx.Client, local_only: bool = False) -> list[Item]:
+    """Fetch RSS sources.
+
+    Feeds marked `local: true` (Substack blocks cloud servers) are skipped in CI: they are
+    fetched from a home connection by `veille relay` and reach CI via relay/local_items.json.
+    """
+    feeds = config["sources"].get("rss") or []
+    if local_only:
+        feeds = [f for f in feeds if f.get("local")]
+    elif in_ci():
+        feeds = [f for f in feeds if not f.get("local")]
+    return fetch_feeds(feeds, client)
+
+
+def fetch_feeds(feeds: list[dict], client: httpx.Client) -> list[Item]:
     items: list[Item] = []
-    for src in config["sources"].get("rss") or []:
+    for src in feeds:
         try:
             r = client.get(src["url"])
             r.raise_for_status()
