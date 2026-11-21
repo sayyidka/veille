@@ -33,7 +33,7 @@ After editing keywords, run `veille build` to see the effect immediately.
    - Copy the client id (under the app name) and the secret.
    - Repo **Settings → Secrets and variables → Actions**: add `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET`.
    - Locally: `export REDDIT_CLIENT_ID=… REDDIT_CLIENT_SECRET=…` before `veille run`.
-4. **Actions → Update feed → Run workflow**. It then runs every 6 hours on its own.
+4. **Actions → Update feed → Run workflow**. It then runs every 2 hours on its own.
 5. Open `https://<your-user>.github.io/veille/` on your phone → Share → **Add to Home Screen**.
 
 Note: GitHub Pages sites are public. The page only contains public links, but if you want it private, Cloudflare Pages + Access
